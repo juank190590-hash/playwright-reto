@@ -8,3 +8,4 @@ test('Login sauce demo', async ({ page }) => {
     await page.getByRole('button', { name: 'login'}).click();
     expect(page.getByText('Swag Labs')).toBeVisible();
 })
+
