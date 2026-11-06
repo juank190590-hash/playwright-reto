@@ -14,7 +14,7 @@ test('Check left menu options', async ({ page }) => {
     for (let i = 0; i < menuOptions; i++) {
         const menuItem = page.getByRole('navigation', { name: 'Sidepanel' }).getByRole('listitem').nth(i);
         const menuItemText = await menuItem.innerText();
-        
+
         console.log(menuItemText);
     }
 
@@ -36,6 +36,37 @@ test('Check left menu options', async ({ page }) => {
     expect(menuOptions).toBe(expectedMenuOptions.length);
     expect(page.getByRole('navigation', { name: 'Sidepanel' }).getByRole('listitem').nth(1)).toHaveText('Tesmon');
 
+});
+
+test('Navigate through menu options', async ({ page }) => {
+    await page.goto(' https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+    await page.getByRole('textbox', { name: 'username' }).fill('admin');
+    await page.getByRole('textbox', { name: 'password' }).fill('admin123');
+    await page.getByRole('button', { name: 'Login' }).click();
+    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+
+    const menuOptions = page.getByRole('navigation', { name: 'Sidepanel' }).getByRole('listitem')
+    const expectedMenuOptions = await menuOptions.count()
+    //await menuOptions.nth(6).click();
+
+    for (let i = 0; i < expectedMenuOptions; i++) {
+        const menuItem = menuOptions.nth(i)
+        const menuItemText = await menuItem.innerText()
+
+        console.log('Navigating to menu option', menuItemText)
+
+        /*if (menuItemText !== 'Maintenance') {
+            await menuItem.click()
+        }*/
+        
+        await menuItem.click()
+        
+        if (menuItemText === 'Maintenance') {
+            await page.goBack();
+        }
+    }
+});
+
 
 /**test('Login ABM Canales', async ({page}) => {
     await page.goto('https://pre.mediosdepago.transfiriendo.com:61032/Front/login');
@@ -45,4 +76,3 @@ test('Check left menu options', async ({ page }) => {
     await expect(page.getByText('Usuarios / Administración de Usuarios')).toBeVisible();
 
     */
-});
